@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="RemitVN - Prototype fintech chuyển kiều hối bằng stablecoin." />
+  <title>RemitVN — Chuyển tiền về Việt Nam</title>
+  <style>
+    :root{
+      --bg:#07111f; --bg2:#0b1830; --card:#0f203c; --card2:#13294b;
+      --text:#f7fbff; --muted:#9fb3c8; --line:rgba(255,255,255,.10);
+      --brand:#5ce1b8; --brand2:#5fa8ff; --accent:#ffd166; --danger:#ff6b6b;
+      --ok:#55d187; --shadow:0 18px 60px rgba(0,0,0,.28);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:
+      radial-gradient(circle at 12% 8%, rgba(95,168,255,.16), transparent 28%),
+      radial-gradient(circle at 82% 18%, rgba(92,225,184,.12), transparent 24%),
+      linear-gradient(180deg,var(--bg),#091629 55%,#06101c);color:var(--text);min-height:100vh}
+    button,input,select,textarea{font:inherit}
+    button{cursor:pointer}
+    a{color:inherit;text-decoration:none}
+    .hidden{display:none!important}
+    .container{width:min(1180px,calc(100% - 32px));margin:0 auto}
+    .nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(16px);background:rgba(7,17,31,.78);border-bottom:1px solid var(--line)}
+    .nav-inner{display:flex;align-items:center;justify-content:space-between;gap:18px;min-height:72px}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:850;letter-spacing:-.3px;font-size:21px}
+    .brand-mark{width:36px;height:36px;border-radius:11px;background:linear-gradient(135deg,var(--brand),var(--brand2));display:grid;place-items:center;color:#04111d;font-weight:900;box-shadow:0 8px 30px rgba(92,225,184,.23)}
+    .nav-links{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .nav-link,.nav-btn{border:0;background:transparent;color:var(--muted);padding:10px 12px;border-radius:10px;font-weight:700}
+    .nav-link:hover,.nav-link.active{color:white;background:rgba(255,255,255,.06)}
+    .btn{border:0;border-radius:12px;padding:12px 16px;font-weight:800;transition:.18s transform,.18s opacity,.18s background;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+    .btn:hover{transform:translateY(-1px)}
+    .btn:active{transform:translateY(0)}
+    .btn-primary{background:linear-gradient(135deg,var(--brand),#64d8ff);color:#04111d;box-shadow:0 10px 26px rgba(92,225,184,.2)}
+    .btn-secondary{background:rgba(255,255,255,.075);color:white;border:1px solid var(--line)}
+    .btn-danger{background:rgba(255,107,107,.13);color:#ffb2b2;border:1px solid rgba(255,107,107,.28)}
+    .btn-small{padding:9px 12px;border-radius:10px;font-size:13px}
+    .hero{padding:64px 0 34px}
+    .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:38px;align-items:center}
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:8px 11px;border-radius:999px;background:rgba(92,225,184,.09);border:1px solid rgba(92,225,184,.18);color:#b8ffea;font-size:13px;font-weight:800}
+    h1{font-size:clamp(42px,6vw,72px);line-height:.98;letter-spacing:-2.8px;margin:18px 0 18px;max-width:780px}
+    .grad{background:linear-gradient(90deg,#fff 8%,#a7e5ff 55%,#8ff0ce);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .lead{font-size:18px;line-height:1.65;color:var(--muted);max-width:690px}
+    .hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
+    .trust-row{display:flex;gap:18px;flex-wrap:wrap;margin-top:26px;color:#c9d8e6;font-size:13px}
+    .trust-item{display:flex;align-items:center;gap:7px}
+    .dot{width:7px;height:7px;border-radius:50%;background:var(--brand)}
+    .calc-card{background:linear-gradient(180deg,rgba(19,41,75,.98),rgba(9,26,49,.98));border:1px solid var(--line);border-radius:22px;padding:22px;box-shadow:var(--shadow)}
+    .calc-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+    .calc-title h3{margin:0;font-size:20px}
+    .pill{font-size:12px;padding:7px 10px;border-radius:999px;background:rgba(95,168,255,.12);color:#b9d8ff;border:1px solid rgba(95,168,255,.18);font-weight:800}
+    .field{display:flex;flex-direction:column;gap:7px;margin-bottom:14px}
+    .field label{font-size:13px;color:#c3d2e0;font-weight:700}
+    .control{display:flex;align-items:center;background:#091a32;border:1px solid var(--line);border-radius:12px;padding:0 12px;min-height:52px}
+    .control input,.control select,.control textarea{width:100%;background:transparent;border:0;color:white;outline:none;padding:14px 6px}
+    .control select option{color:#081323}
+    .control textarea{min-height:90px;resize:vertical}
+    .suffix{font-weight:900;color:#b9c9d9}
+    .rate-box{background:rgba(255,255,255,.045);border:1px solid var(--line);border-radius:14px;padding:14px;margin:14px 0 16px}
+    .row{display:flex;align-items:center;justify-content:space-between;gap:16px}
+    .row + .row{margin-top:9px}
+    .muted{color:var(--muted)}
+    .big-number{font-size:26px;font-weight:900;letter-spacing:-.6px}
+    .section{padding:60px 0}
+    .section-head{display:flex;align-items:end;justify-content:space-between;gap:18px;margin-bottom:24px}
+    .section h2{font-size:clamp(28px,4vw,44px);letter-spacing:-1.4px;margin:0 0 9px}
+    .section-sub{color:var(--muted);max-width:680px;line-height:1.6;margin:0}
+    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .feature{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:18px;padding:19px}
+    .feature .icon{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:rgba(92,225,184,.09);color:#bfffea;font-size:19px;margin-bottom:14px}
+    .feature h3{margin:0 0 8px;font-size:17px}
+    .feature p{margin:0;color:var(--muted);line-height:1.55;font-size:14px}
+    .process{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;position:relative}
+    .process-card{background:rgba(255,255,255,.04);border:1px solid var(--line);padding:15px;border-radius:16px;min-height:128px}
+    .process-num{width:29px;height:29px;border-radius:9px;background:linear-gradient(135deg,var(--brand),var(--brand2));color:#04111d;font-weight:900;display:grid;place-items:center;margin-bottom:12px}
+    .process-card b{display:block;margin-bottom:5px;font-size:14px}.process-card span{color:var(--muted);font-size:12px;line-height:1.45}
+    .app-view{padding:36px 0 70px}
+    .app-shell{display:grid;grid-template-columns:230px 1fr;gap:22px}
+    .sidebar{background:rgba(255,255,255,.035);border:1px solid var(--line);border-radius:18px;padding:12px;height:max-content;position:sticky;top:92px}
+    .side-item{width:100%;text-align:left;border:0;background:transparent;color:var(--muted);padding:12px;border-radius:11px;font-weight:750;display:flex;align-items:center;gap:9px}
+    .side-item:hover,.side-item.active{background:rgba(255,255,255,.07);color:white}
+    .side-divider{height:1px;background:var(--line);margin:10px 4px}
+    .panel{background:rgba(255,255,255,.035);border:1px solid var(--line);border-radius:18px;padding:20px}
+    .panel + .panel{margin-top:16px}
+    .panel h3{margin:0 0 6px}.panel p{color:var(--muted)}
+    .metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0}
+    .metric{background:#0b1d36;border:1px solid var(--line);border-radius:15px;padding:16px}
+    .metric .label{color:var(--muted);font-size:12px;font-weight:700}.metric .value{font-size:24px;font-weight:900;margin-top:8px}.metric .delta{font-size:12px;color:#9ee8c5;margin-top:4px}
+    .table-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px}
+    table{width:100%;border-collapse:collapse;min-width:720px;background:rgba(5,16,31,.4)}
+    th,td{padding:13px 14px;text-align:left;border-bottom:1px solid var(--line);font-size:13px}
+    th{color:#b7c9da;background:rgba(255,255,255,.035);font-weight:800}
+    tr:last-child td{border-bottom:0}
+    .status{display:inline-flex;align-items:center;gap:6px;padding:6px 9px;border-radius:999px;font-size:11px;font-weight:850}
+    .status.ok{background:rgba(85,209,135,.10);color:#9af0bb}.status.pending{background:rgba(255,209,102,.10);color:#ffe39b}.status.danger{background:rgba(255,107,107,.10);color:#ffb8b8}
+    .wizard{display:grid;grid-template-columns:220px 1fr;gap:20px}
+    .steps{display:flex;flex-direction:column;gap:8px}
+    .step{padding:12px;border-radius:12px;border:1px solid var(--line);color:var(--muted);background:rgba(255,255,255,.025)}
+    .step.active{color:#07111f;background:linear-gradient(135deg,var(--brand),#86cfff);border-color:transparent;font-weight:900}
+    .step.done{color:#b8f8dc;border-color:rgba(92,225,184,.22);background:rgba(92,225,184,.07)}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .full{grid-column:1/-1}
+    .summary-box{background:#0a1b32;border:1px solid var(--line);border-radius:15px;padding:16px;margin:14px 0}
+    .timeline{margin-top:18px;position:relative}
+    .timeline-item{display:grid;grid-template-columns:34px 1fr;gap:12px;padding-bottom:22px;position:relative}
+    .timeline-item:not(:last-child):after{content:"";position:absolute;left:16px;top:30px;bottom:0;width:2px;background:var(--line)}
+    .timeline-dot{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line);background:#0a1a30;color:var(--muted);z-index:2}
+    .timeline-item.done .timeline-dot{background:rgba(85,209,135,.16);color:#9af0bb;border-color:rgba(85,209,135,.28)}
+    .timeline-item.current .timeline-dot{background:rgba(255,209,102,.13);color:#ffe39b;border-color:rgba(255,209,102,.3)}
+    .timeline-item b{display:block;margin-top:2px}.timeline-item span{color:var(--muted);font-size:13px}
+    .notice{border:1px solid rgba(95,168,255,.22);background:rgba(95,168,255,.07);padding:12px 14px;border-radius:12px;color:#c9e1ff;font-size:13px;line-height:1.55}
+    .notice.warn{border-color:rgba(255,209,102,.24);background:rgba(255,209,102,.07);color:#ffe6a4}
+    .notice.ok{border-color:rgba(85,209,135,.24);background:rgba(85,209,135,.07);color:#aaf5c5}
+    .modal{position:fixed;inset:0;background:rgba(1,7,14,.72);display:grid;place-items:center;padding:18px;z-index:100;backdrop-filter:blur(10px)}
+    .modal-card{width:min(560px,100%);max-height:88vh;overflow:auto;background:linear-gradient(180deg,#112744,#0a1a30);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:22px}
+    .modal-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}.modal-head h3{margin:0}
+    .close{border:0;background:rgba(255,255,255,.07);color:white;width:34px;height:34px;border-radius:10px}
+    .tabs{display:flex;gap:8px;background:rgba(255,255,255,.04);padding:5px;border-radius:12px;margin-bottom:16px}.tab{flex:1;border:0;background:transparent;color:var(--muted);padding:10px;border-radius:9px;font-weight:800}.tab.active{background:#102a4b;color:white}
+    .auth-note{font-size:12px;color:var(--muted);line-height:1.5;margin-top:11px}
+    .kyc-card{border:1px dashed rgba(255,255,255,.17);border-radius:14px;padding:15px;background:rgba(255,255,255,.025)}
+    .upload{display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid var(--line);padding:11px 12px;border-radius:11px;margin-top:8px;color:#c8d7e4}.upload input{max-width:230px}
+    .receipt{background:white;color:#111;border-radius:15px;padding:22px}.receipt h2{margin:0 0 5px}.receipt small{color:#555}.receipt-row{display:flex;justify-content:space-between;gap:16px;padding:9px 0;border-bottom:1px solid #ececec}.receipt-row:last-child{border-bottom:0}.receipt .logo{font-weight:900;font-size:20px;color:#0e6b60}
+    .footer{border-top:1px solid var(--line);padding:26px 0 40px;color:var(--muted);font-size:13px}
+    .admin-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    .toast{position:fixed;right:18px;bottom:18px;z-index:200;background:#122a47;border:1px solid var(--line);color:white;padding:13px 16px;border-radius:12px;box-shadow:var(--shadow);max-width:360px;animation:toastIn .25s ease}
+    @keyframes toastIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+    @media (max-width:950px){.hero-grid,.app-shell,.wizard{grid-template-columns:1fr}.hero{padding-top:40px}.sidebar{position:static;display:flex;overflow:auto}.side-item{white-space:nowrap}.process{grid-template-columns:repeat(3,1fr)}.metric-grid,.admin-grid{grid-template-columns:repeat(2,1fr)}.grid-3{grid-template-columns:1fr}.nav-links .nav-link{display:none}}
+    @media (max-width:620px){.container{width:min(100% - 20px,1180px)}h1{letter-spacing:-1.8px}.process{grid-template-columns:1fr 1fr}.metric-grid,.admin-grid,.form-grid{grid-template-columns:1fr}.full{grid-column:auto}.nav-inner{min-height:64px}.nav-btn{padding:9px}.hero-actions .btn{width:100%}.calc-card{padding:17px}.section{padding:45px 0}}
+    @media print{body{background:white}.nav,.sidebar,.no-print,.footer{display:none!important}.app-shell{display:block}.panel{border:0}.receipt{box-shadow:none}.app-view{padding:0}}
+  </style>
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a href="#" class="brand" data-go="home"><span class="brand-mark">R</span><span>RemitVN</span></a>
+      <nav class="nav-links">
+        <button class="nav-link active" data-go="home">Trang chủ</button>
+        <button class="nav-link" data-go="how">Cách hoạt động</button>
+        <button class="nav-link" data-go="support">Hỗ trợ</button>
+        <button class="nav-btn btn btn-secondary btn-small" id="loginTop">Đăng nhập</button>
+        <button class="nav-btn btn btn-primary btn-small hidden" id="dashboardTop">Dashboard</button>
+        <button class="nav-btn btn btn-secondary btn-small hidden" id="logoutTop">Đăng xuất</button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="publicArea">
+    <section class="hero" id="homeSection">
+      <div class="container hero-grid">
+        <div>
+          <span class="eyebrow">⚡ Prototype fintech • Phí 0,5%</span>
+          <h1 class="grad">Gửi tiền về Việt Nam nhanh hơn.</h1>
+          <p class="lead">RemitVN sử dụng stablecoin như hạ tầng phía sau để chuyển tiền xuyên biên giới. Người gửi thanh toán bằng tiền thông thường, người nhận nhận VND — không cần mua hay giữ crypto.</p>
+          <div class="hero-actions">
+            <button class="btn btn-primary" id="heroSend">Gửi tiền ngay →</button>
+            <button class="btn btn-secondary" data-go="how">Xem cách hoạt động</button>
+          </div>
+          <div class="trust-row">
+            <span class="trust-item"><span class="dot"></span>KYC/AML</span>
+            <span class="trust-item"><span class="dot"></span>Theo dõi giao dịch</span>
+            <span class="trust-item"><span class="dot"></span>Người nhận nhận VND</span>
+          </div>
+        </div>
+        <div class="calc-card">
+          <div class="calc-title"><h3>Tính thử khoản chuyển</h3><span class="pill">Live demo</span></div>
+          <div class="field"><label>Bạn gửi</label><div class="control"><input id="publicAmount" type="number" min="10" step="10" value="1000"><span class="suffix">USD</span></div></div>
+          <div class="rate-box">
+            <div class="row"><span class="muted">Phí RemitVN (0,5%)</span><b id="publicFee">$5.00</b></div>
+            <div class="row"><span class="muted">Tỷ giá demo</span><b>1 USD = 26.100 VND</b></div>
+            <div class="row"><span class="muted">Người nhận nhận</span><span class="big-number" id="publicReceive">25.969.500 ₫</span></div>
+          </div>
+          <button class="btn btn-primary" style="width:100%" id="calcSend">Tiếp tục chuyển tiền</button>
+          <p class="auth-note">* Tỷ giá dùng trong prototype là tỷ giá demo cố định. Stablecoin được xử lý ở backend.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="howSection">
+      <div class="container">
+        <div class="section-head"><div><h2>Stablecoin ở phía sau, trải nghiệm ở phía trước</h2><p class="section-sub">Khách hàng không cần ví crypto. RemitVN tự xử lý chuyển đổi và settlement.</p></div></div>
+        <div class="process">
+          <div class="process-card"><span class="process-num">1</span><b>Người gửi USD</b><span>Thanh toán bằng tài khoản ngân hàng hoặc thẻ.</span></div>
+          <div class="process-card"><span class="process-num">2</span><b>RemitVN nhận tiền</b><span>Kiểm tra danh tính và giao dịch.</span></div>
+          <div class="process-card"><span class="process-num">3</span><b>USD → Stablecoin</b><span>Chuyển đổi nội bộ ở backend.</span></div>
+          <div class="process-card"><span class="process-num">4</span><b>Settlement</b><span>Stablecoin di chuyển xuyên biên giới.</span></div>
+          <div class="process-card"><span class="process-num">5</span><b>Stablecoin → VND</b><span>Đối tác thanh khoản đổi sang tiền Việt.</span></div>
+          <div class="process-card"><span class="process-num">6</span><b>Người nhận nhận VND</b><span>Tiền vào tài khoản ngân hàng Việt Nam.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="supportSection">
+      <div class="container">
+        <div class="section-head"><div><h2>Thiết kế cho chuyển tiền thực tế</h2><p class="section-sub">Prototype tập trung vào những phần giáo viên có thể bấm thử: đăng nhập, KYC, tạo giao dịch, tracking, lịch sử và dashboard.</p></div></div>
+        <div class="grid-3">
+          <div class="feature"><div class="icon">🛡️</div><h3>KYC & kiểm soát rủi ro</h3><p>Tài khoản cần xác minh trước khi tạo giao dịch thật trong demo.</p></div>
+          <div class="feature"><div class="icon">↗</div><h3>Phí minh bạch</h3><p>0,5% được tính ngay từ đầu, số tiền người nhận nhận được hiển thị rõ.</p></div>
+          <div class="feature"><div class="icon">◎</div><h3>Tracking từng bước</h3><p>Giao dịch có mã riêng, timeline xử lý và biên lai sau khi hoàn tất.</p></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <main id="appArea" class="app-view hidden">
+    <div class="container app-shell">
+      <aside class="sidebar" id="userSidebar">
+        <button class="side-item active" data-view="dashboard">⌂ Dashboard</button>
+        <button class="side-item" data-view="send">↗ Gửi tiền</button>
+        <button class="side-item" data-view="track">◎ Theo dõi</button>
+        <button class="side-item" data-view="history">≡ Lịch sử</button>
+        <button class="side-item" data-view="kyc">✓ KYC</button>
+        <div class="side-divider"></div>
+        <button class="side-item" data-view="help">? Hỗ trợ</button>
+      </aside>
+      <aside class="sidebar hidden" id="adminSidebar">
+        <button class="side-item active" data-view="admin">⌂ Admin Dashboard</button>
+        <button class="side-item" data-view="adminKyc">✓ KYC Queue</button>
+        <button class="side-item" data-view="adminTx">↗ Transactions</button>
+      </aside>
+      <section id="appContent"></section>
+    </div>
+  </main>
+
+  <footer class="footer"><div class="container">RemitVN Prototype • Dữ liệu và tỷ giá trong website này là dữ liệu demo cho mục đích học tập.</div></footer>
+
+  <div id="authModal" class="modal hidden">
+    <div class="modal-card">
+      <div class="modal-head"><div><div class="brand"><span class="brand-mark">R</span><span>RemitVN</span></div></div><button class="close" data-close="authModal">✕</button></div>
+      <div class="tabs"><button class="tab active" data-auth-tab="login">Đăng nhập</button><button class="tab" data-auth-tab="register">Đăng ký</button></div>
+      <form id="loginForm">
+        <div class="field"><label>Email</label><div class="control"><input id="loginEmail" type="email" value="demo@remitvn.vn" required></div></div>
+        <div class="field"><label>Mật khẩu</label><div class="control"><input id="loginPassword" type="password" value="123456" required></div></div>
+        <button class="btn btn-primary" style="width:100%">Đăng nhập</button>
+        <p class="auth-note"><b>Tài khoản demo:</b> demo@remitvn.vn / 123456<br><b>Admin:</b> admin@remitvn.vn / admin123</p>
+      </form>
+      <form id="registerForm" class="hidden">
+        <div class="form-grid">
+          <div class="field"><label>Họ tên</label><div class="control"><input id="regName" required placeholder="Nguyễn Roa"></div></div>
+          <div class="field"><label>Số điện thoại</label><div class="control"><input id="regPhone" required placeholder="+1 ..."></div></div>
+          <div class="field full"><label>Email</label><div class="control"><input id="regEmail" type="email" required></div></div>
+          <div class="field full"><label>Mật khẩu</label><div class="control"><input id="regPassword" type="password" minlength="6" required></div></div>
+        </div>
+        <button class="btn btn-primary" style="width:100%">Tạo tài khoản</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="receiptModal" class="modal hidden">
+    <div class="modal-card" style="width:min(640px,100%)">
+      <div class="modal-head no-print"><h3>Biên lai giao dịch</h3><button class="close" data-close="receiptModal">✕</button></div>
+      <div id="receiptContent"></div>
+      <div class="hero-actions no-print"><button class="btn btn-primary" id="printReceipt">In / Lưu PDF</button><button class="btn btn-secondary" data-close="receiptModal">Đóng</button></div>
+    </div>
+  </div>
+
+  <script>
+    const RATE=26100, FEE_RATE=.005;
+    const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+    const moneyUSD=n=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(Number(n||0));
+    const moneyVND=n=>new Intl.NumberFormat('vi-VN',{style:'currency',currency:'VND',maximumFractionDigits:0}).format(Number(n||0));
+    const now=()=>new Date().toISOString();
+    const dateVN=s=>new Date(s).toLocaleString('vi-VN');
+    const uid=()=> 'RMVN-'+new Date().getFullYear()+'-'+Math.random().toString().slice(2,8);
+    const hash=()=> '0x'+[...crypto.getRandomValues(new Uint8Array(14))].map(b=>b.toString(16).padStart(2,'0')).join('');
+
+    const seed={
+      users:[
+        {id:'u-demo',name:'Nguyễn Roa',phone:'+1 916 555 0102',email:'demo@remitvn.vn',password:'123456',role:'user',kyc:'verified',nationality:'Việt Nam',dob:'1998-06-18',doc:'P1234567',address:'California, USA'},
+        {id:'u-admin',name:'RemitVN Admin',phone:'',email:'admin@remitvn.vn',password:'admin123',role:'admin',kyc:'verified'}
+      ],
+      tx:[
+        {id:'RMVN-2026-120401',userId:'u-demo',recipient:'Nguyễn An',bank:'Vietcombank',account:'0123456789',phone:'0901112223',amount:1000,fee:5,rate:RATE,receive:995*RATE,payment:'Bank Account',status:'completed',createdAt:'2026-10-02T09:12:00',stage:5,blockchain:'0x93f18c72ac33d900aa1282'},
+        {id:'RMVN-2026-120402',userId:'u-demo',recipient:'Trần Mai',bank:'Techcombank',account:'9988776655',phone:'0903334555',amount:500,fee:2.5,rate:RATE,receive:497.5*RATE,payment:'Debit Card',status:'completed',createdAt:'2026-10-08T14:30:00',stage:5,blockchain:'0x77ad290031fba82a1c3312'},
+        {id:'RMVN-2026-120403',userId:'u-demo',recipient:'Phạm Linh',bank:'BIDV',account:'1122334455',phone:'0911223344',amount:800,fee:4,rate:RATE,receive:796*RATE,payment:'Bank Account',status:'completed',createdAt:'2026-10-14T20:05:00',stage:5,blockchain:'0x4be83901fc349d0a222101'},
+        {id:'RMVN-2026-120404',userId:'u-demo',recipient:'Lê Vy',bank:'ACB',account:'2233445566',phone:'0933445566',amount:950,fee:4.75,rate:RATE,receive:945.25*RATE,payment:'Bank Account',status:'completed',createdAt:'2026-10-17T10:20:00',stage:5,blockchain:'0xaa40912be8300124fe2211'},
+        {id:'RMVN-2026-120405',userId:'u-demo',recipient:'Hoàng Sơn',bank:'MB Bank',account:'5566778899',phone:'0988445566',amount:1000,fee:5,rate:RATE,receive:995*RATE,payment:'Debit Card',status:'completed',createdAt:'2026-10-18T18:10:00',stage:5,blockchain:'0xbf318c7ae900011d9277aa'}
+      ]
+    };
+    function initStore(){ if(!localStorage.getItem('remitvn_db')) localStorage.setItem('remitvn_db',JSON.stringify(seed)); }
+    const getDB=()=>JSON.parse(localStorage.getItem('remitvn_db'));
+    const saveDB=db=>localStorage.setItem('remitvn_db',JSON.stringify(db));
+    const getSession=()=>JSON.parse(localStorage.getItem('remitvn_session')||'null');
+    const setSession=s=>s?localStorage.setItem('remitvn_session',JSON.stringify(s)):localStorage.removeItem('remitvn_session');
+    function toast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2600)}
+    function updatePublicCalc(){const a=Math.max(0,Number($('#publicAmount').value||0));const f=a*FEE_RATE;$('#publicFee').textContent=moneyUSD(f);$('#publicReceive').textContent=moneyVND((a-f)*RATE)}
+    function showModal(id){$('#'+id).classList.remove('hidden')} function hideModal(id){$('#'+id).classList.add('hidden')}
+    function currentUser(){const s=getSession();if(!s)return null;return getDB().users.find(u=>u.id===s.userId)||null}
+    function authRequired(target='dashboard'){const u=currentUser();if(!u){showModal('authModal');localStorage.setItem('remitvn_after_login',target);return false}openApp(target);return true}
+    function refreshTop(){const u=currentUser();$('#loginTop').classList.toggle('hidden',!!u);$('#dashboardTop').classList.toggle('hidden',!u);$('#logoutTop').classList.toggle('hidden',!u)}
+    function openApp(view='dashboard'){$('#publicArea').classList.add('hidden');$('#appArea').classList.remove('hidden');const u=currentUser();const isAdmin=u?.role==='admin';$('#userSidebar').classList.toggle('hidden',isAdmin);$('#adminSidebar').classList.toggle('hidden',!isAdmin);if(isAdmin&&!view.startsWith('admin'))view='admin';setView(view);window.scrollTo({top:0,behavior:'smooth'})}
+    function openPublic(section='home'){$('#appArea').classList.add('hidden');$('#publicArea').classList.remove('hidden');const map={home:'#homeSection',how:'#howSection',support:'#supportSection'};setTimeout(()=>$(map[section]||'#homeSection').scrollIntoView({behavior:'smooth'}),30)}
+    function setView(view){const u=currentUser();if(!u){openPublic();return}$$('.side-item').forEach(b=>b.classList.toggle('active',b.dataset.view===view));const renderers={dashboard:renderDashboard,send:renderSend,track:renderTrack,history:renderHistory,kyc:renderKyc,help:renderHelp,admin:renderAdmin,adminKyc:renderAdminKyc,adminTx:renderAdminTx};(renderers[view]||renderDashboard)()}
+    function userTx(){const u=currentUser();return getDB().tx.filter(t=>t.userId===u.id).sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt))}
+    function statusHtml(t){if(t.status==='completed')return '<span class="status ok">● Thành công</span>';if(t.status==='frozen')return '<span class="status danger">● Đã đóng băng</span>';return '<span class="status pending">● Đang xử lý</span>'}
+    function renderDashboard(){const u=currentUser(), tx=userTx(), completed=tx.filter(t=>t.status==='completed'), total=completed.reduce((s,t)=>s+t.amount,0), fees=tx.reduce((s,t)=>s+t.fee,0), saved=Math.max(0,total*.04-fees);$('#appContent').innerHTML=`
+      <div class="panel"><div class="row"><div><h3>Xin chào, ${u.name} 👋</h3><p>Đây là tổng quan tài khoản RemitVN của bạn.</p></div><button class="btn btn-primary btn-small" onclick="setView('send')">+ Gửi tiền</button></div>
+      ${u.kyc!=='verified'?'<div class="notice warn">Tài khoản của bạn chưa hoàn tất KYC. Hãy xác minh danh tính để tạo giao dịch.</div>':''}
+      <div class="metric-grid"><div class="metric"><div class="label">TỔNG TIỀN ĐÃ GỬI</div><div class="value">${moneyUSD(total)}</div><div class="delta">Qua ${completed.length} giao dịch hoàn tất</div></div><div class="metric"><div class="label">TỔNG PHÍ ĐÃ TRẢ</div><div class="value">${moneyUSD(fees)}</div><div class="delta">Phí tiêu chuẩn 0,5%</div></div><div class="metric"><div class="label">SỐ GIAO DỊCH</div><div class="value">${tx.length}</div><div class="delta">Bao gồm giao dịch đang xử lý</div></div><div class="metric"><div class="label">TIẾT KIỆM ƯỚC TÍNH</div><div class="value">${moneyUSD(saved)}</div><div class="delta">So với giả định chi phí 4%</div></div></div>
+      <h3 style="margin-top:24px">Giao dịch gần đây</h3><div class="table-wrap"><table><thead><tr><th>Mã</th><th>Người nhận</th><th>Số tiền</th><th>Ngày</th><th>Trạng thái</th><th></th></tr></thead><tbody>${tx.slice(0,5).map(t=>`<tr><td>${t.id}</td><td>${t.recipient}</td><td>${moneyUSD(t.amount)}</td><td>${dateVN(t.createdAt)}</td><td>${statusHtml(t)}</td><td><button class="btn btn-secondary btn-small" onclick="showReceipt('${t.id}')">Xem</button></td></tr>`).join('')||'<tr><td colspan="6">Chưa có giao dịch.</td></tr>'}</tbody></table></div></div>`}
+    let sendState={step:1,amount:1000,recipient:'',bank:'Vietcombank',account:'',phone:'',payment:'Bank Account'};
+    function renderSend(){const u=currentUser();if(u.kyc!=='verified'){ $('#appContent').innerHTML=`<div class="panel"><h3>Cần xác minh KYC trước</h3><p>Để mô phỏng đúng flow fintech, RemitVN yêu cầu tài khoản được xác minh danh tính trước khi tạo giao dịch.</p><button class="btn btn-primary" onclick="setView('kyc')">Đi tới KYC</button></div>`;return;} sendState.step=sendState.step||1;renderSendStep()}
+    function renderSendStep(){const s=sendState;const fee=s.amount*FEE_RATE, recv=(s.amount-fee)*RATE;$('#appContent').innerHTML=`<div class="panel"><div class="row"><div><h3>Chuyển tiền về Việt Nam</h3><p>Hoàn tất 4 bước để tạo giao dịch.</p></div><span class="pill">Phí 0,5%</span></div><div class="wizard"><div class="steps">${['Số tiền','Người nhận','Thanh toán','Xác nhận'].map((x,i)=>`<div class="step ${s.step===i+1?'active':s.step>i+1?'done':''}">${i+1}. ${x}</div>`).join('')}</div><div id="stepBody">${sendStepBody(s,fee,recv)}</div></div></div>`;bindSendStep()}
+    function sendStepBody(s,fee,recv){if(s.step===1)return `<div><div class="field"><label>Bạn gửi</label><div class="control"><input id="sendAmount" type="number" min="10" step="10" value="${s.amount}"><span class="suffix">USD</span></div></div><div class="summary-box"><div class="row"><span class="muted">Phí RemitVN</span><b id="sendFee">${moneyUSD(fee)}</b></div><div class="row"><span class="muted">Tỷ giá</span><b>1 USD = 26.100 VND</b></div><div class="row"><span class="muted">Người nhận nhận</span><b id="sendRecv">${moneyVND(recv)}</b></div></div><div class="notice">Stablecoin chỉ được dùng ở backend. Người nhận không cần ví crypto.</div><div class="hero-actions"><button class="btn btn-primary" id="nextSend">Tiếp tục →</button></div></div>`;
+      if(s.step===2)return `<div><div class="form-grid"><div class="field full"><label>Tên người nhận</label><div class="control"><input id="recName" value="${s.recipient}" placeholder="Nguyễn Văn An"></div></div><div class="field"><label>Ngân hàng</label><div class="control"><select id="recBank"><option ${s.bank==='Vietcombank'?'selected':''}>Vietcombank</option><option ${s.bank==='Techcombank'?'selected':''}>Techcombank</option><option ${s.bank==='BIDV'?'selected':''}>BIDV</option><option ${s.bank==='MB Bank'?'selected':''}>MB Bank</option><option ${s.bank==='ACB'?'selected':''}>ACB</option></select></div></div><div class="field"><label>Số tài khoản</label><div class="control"><input id="recAccount" value="${s.account}" inputmode="numeric"></div></div><div class="field full"><label>Số điện thoại</label><div class="control"><input id="recPhone" value="${s.phone}" placeholder="09..."></div></div></div><div class="hero-actions"><button class="btn btn-secondary" id="backSend">← Quay lại</button><button class="btn btn-primary" id="nextSend">Tiếp tục →</button></div></div>`;
+      if(s.step===3)return `<div><h3>Chọn phương thức thanh toán</h3><p>Đây là giao diện demo, không xử lý tiền thật.</p>${['Bank Account','Debit Card','Apple Pay'].map(p=>`<label class="feature" style="display:flex;align-items:center;gap:12px;margin-bottom:10px"><input type="radio" name="payment" value="${p}" ${s.payment===p?'checked':''}><div><b>${p}</b><p style="margin:2px 0 0">${p==='Bank Account'?'Phù hợp cho giao dịch giá trị lớn':p==='Debit Card'?'Xác nhận nhanh':'Demo tích hợp ví điện tử'}</p></div></label>`).join('')}<div class="hero-actions"><button class="btn btn-secondary" id="backSend">← Quay lại</button><button class="btn btn-primary" id="nextSend">Tiếp tục →</button></div></div>`;
+      return `<div><h3>Xác nhận giao dịch</h3><div class="summary-box"><div class="row"><span class="muted">Bạn gửi</span><b>${moneyUSD(s.amount)}</b></div><div class="row"><span class="muted">Phí 0,5%</span><b>${moneyUSD(fee)}</b></div><div class="row"><span class="muted">Người nhận</span><b>${s.recipient}</b></div><div class="row"><span class="muted">Ngân hàng</span><b>${s.bank}</b></div><div class="row"><span class="muted">Số tài khoản</span><b>${s.account}</b></div><div class="row"><span class="muted">Thanh toán</span><b>${s.payment}</b></div><div class="row"><span class="muted">Người nhận nhận</span><b>${moneyVND(recv)}</b></div></div><div class="notice warn">Bấm xác nhận sẽ tạo một giao dịch demo và chạy timeline xử lý tự động.</div><div class="hero-actions"><button class="btn btn-secondary" id="backSend">← Quay lại</button><button class="btn btn-primary" id="confirmSend">Xác nhận chuyển tiền</button></div></div>`}
+    function bindSendStep(){if($('#sendAmount')){$('#sendAmount').oninput=e=>{sendState.amount=Math.max(10,Number(e.target.value||10));$('#sendFee').textContent=moneyUSD(sendState.amount*FEE_RATE);$('#sendRecv').textContent=moneyVND((sendState.amount-sendState.amount*FEE_RATE)*RATE)}}
+      $('#backSend')?.addEventListener('click',()=>{sendState.step--;renderSendStep()});$('#nextSend')?.addEventListener('click',()=>{if(sendState.step===2){sendState.recipient=$('#recName').value.trim();sendState.bank=$('#recBank').value;sendState.account=$('#recAccount').value.trim();sendState.phone=$('#recPhone').value.trim();if(!sendState.recipient||!sendState.account){toast('Vui lòng nhập tên người nhận và số tài khoản.');return}}if(sendState.step===3){sendState.payment=$('input[name="payment"]:checked')?.value||'Bank Account'}sendState.step++;renderSendStep()});$('#confirmSend')?.addEventListener('click',createTransaction)}
+    function createTransaction(){const db=getDB(),u=currentUser(),fee=sendState.amount*FEE_RATE;const t={id:uid(),userId:u.id,recipient:sendState.recipient,bank:sendState.bank,account:sendState.account,phone:sendState.phone,amount:sendState.amount,fee,rate:RATE,receive:(sendState.amount-fee)*RATE,payment:sendState.payment,status:'processing',createdAt:now(),stage:1,blockchain:hash()};db.tx.push(t);saveDB(db);localStorage.setItem('remitvn_last_tx',t.id);sendState={step:1,amount:1000,recipient:'',bank:'Vietcombank',account:'',phone:'',payment:'Bank Account'};toast('Đã tạo giao dịch '+t.id);renderTracking(t.id);simulateTx(t.id)}
+    function simulateTx(id){let i=1;const timer=setInterval(()=>{const db=getDB(),t=db.tx.find(x=>x.id===id);if(!t||t.status==='frozen'){clearInterval(timer);return}i++;t.stage=Math.min(5,i);if(i>=5){t.status='completed';clearInterval(timer)}saveDB(db);if(!$('#appArea').classList.contains('hidden')&&$('#appContent').dataset.txid===id)renderTracking(id)},1400)}
+    const stages=[['Thanh toán đã nhận','RemitVN đã nhận lệnh và xác nhận khoản thanh toán.'],['Chuyển đổi sang stablecoin','Hệ thống chuyển đổi nội bộ phục vụ settlement.'],['Đang xử lý blockchain','Giao dịch stablecoin đang được xác nhận.'],['Chuyển đổi sang VND','Đối tác thanh khoản chuẩn bị tiền VND.'],['Đã chuyển đến người nhận','Tiền đã tới tài khoản ngân hàng của người nhận.']];
+    function renderTracking(id){const txs=userTx();let t=id?txs.find(x=>x.id===id):txs.find(x=>x.status==='processing')||txs[0];if(!t){$('#appContent').innerHTML='<div class="panel"><h3>Chưa có giao dịch để theo dõi</h3><p>Hãy tạo giao dịch đầu tiên.</p><button class="btn btn-primary" onclick="setView(\'send\')">Gửi tiền</button></div>';return}$('#appContent').dataset.txid=t.id;$('#appContent').innerHTML=`<div class="panel"><div class="row"><div><h3>Theo dõi ${t.id}</h3><p>${t.recipient} • ${moneyUSD(t.amount)} → ${moneyVND(t.receive)}</p></div>${statusHtml(t)}</div>${t.status==='frozen'?'<div class="notice warn">Giao dịch đang bị đóng băng để kiểm tra thủ công.</div>':''}<div class="timeline">${stages.map((st,i)=>{const n=i+1,done=t.status==='completed'||t.stage>n,current=t.status!=='completed'&&t.stage===n;return `<div class="timeline-item ${done?'done':current?'current':''}"><div class="timeline-dot">${done?'✓':n}</div><div><b>${st[0]}</b><span>${st[1]}</span></div></div>`}).join('')}</div><div class="summary-box"><div class="row"><span class="muted">Blockchain reference</span><b style="font-size:12px;word-break:break-all">${t.blockchain}</b></div><div class="row"><span class="muted">Tạo lúc</span><b>${dateVN(t.createdAt)}</b></div></div><div class="hero-actions"><button class="btn btn-secondary" onclick="showReceipt('${t.id}')">Xem biên lai</button><button class="btn btn-primary" onclick="setView('history')">Lịch sử giao dịch</button></div></div>`}
+    function renderTrack(){renderTracking()}
+    function renderHistory(){const tx=userTx();$('#appContent').innerHTML=`<div class="panel"><div class="row"><div><h3>Lịch sử giao dịch</h3><p>Tất cả giao dịch đã tạo trên tài khoản.</p></div><button class="btn btn-primary btn-small" onclick="setView('send')">+ Gửi tiền</button></div><div class="table-wrap"><table><thead><tr><th>Mã</th><th>Người nhận</th><th>Số tiền</th><th>Phí</th><th>Ngày</th><th>Trạng thái</th><th></th></tr></thead><tbody>${tx.map(t=>`<tr><td>${t.id}</td><td>${t.recipient}<br><span class="muted">${t.bank}</span></td><td>${moneyUSD(t.amount)}</td><td>${moneyUSD(t.fee)}</td><td>${dateVN(t.createdAt)}</td><td>${statusHtml(t)}</td><td><button class="btn btn-secondary btn-small" onclick="showReceipt('${t.id}')">Biên lai</button></td></tr>`).join('')||'<tr><td colspan="7">Chưa có giao dịch.</td></tr>'}</tbody></table></div></div>`}
+    function renderKyc(){const u=currentUser();const state=u.kyc||'unverified';$('#appContent').innerHTML=`<div class="panel"><div class="row"><div><h3>Xác minh danh tính (KYC)</h3><p>Prototype mô phỏng bước xác minh bắt buộc trước khi chuyển tiền.</p></div>${state==='verified'?'<span class="status ok">✓ Đã xác minh</span>':state==='pending'?'<span class="status pending">● Đang chờ duyệt</span>':'<span class="status danger">! Chưa xác minh</span>'}</div>${state==='verified'?`<div class="summary-box"><div class="row"><span class="muted">Họ tên</span><b>${u.name}</b></div><div class="row"><span class="muted">Quốc tịch</span><b>${u.nationality||'Việt Nam'}</b></div><div class="row"><span class="muted">Giấy tờ</span><b>${u.doc||'Đã lưu'}</b></div></div><div class="notice ok">KYC đã hoàn tất. Bạn có thể tạo giao dịch.</div>`:state==='pending'?'<div class="notice warn">Hồ sơ đã được gửi. Admin có thể duyệt trong mục KYC Queue.</div>':`<form id="kycForm"><div class="form-grid"><div class="field"><label>Họ tên</label><div class="control"><input id="kycName" value="${u.name}" required></div></div><div class="field"><label>Ngày sinh</label><div class="control"><input id="kycDob" type="date" required></div></div><div class="field"><label>Quốc tịch</label><div class="control"><input id="kycNat" value="Việt Nam" required></div></div><div class="field"><label>Số CCCD/Passport</label><div class="control"><input id="kycDoc" required></div></div><div class="field full"><label>Địa chỉ</label><div class="control"><input id="kycAddr" required></div></div></div><div class="kyc-card"><b>Upload tài liệu</b><div class="upload"><span>Mặt trước CCCD/Passport</span><input type="file" required></div><div class="upload"><span>Mặt sau</span><input type="file"></div><div class="upload"><span>Selfie</span><input type="file" required></div></div><div class="hero-actions"><button class="btn btn-primary">Gửi hồ sơ KYC</button></div></form>`}</div>`;$('#kycForm')?.addEventListener('submit',e=>{e.preventDefault();const db=getDB(),me=db.users.find(x=>x.id===u.id);me.name=$('#kycName').value.trim();me.dob=$('#kycDob').value;me.nationality=$('#kycNat').value.trim();me.doc=$('#kycDoc').value.trim();me.address=$('#kycAddr').value.trim();me.kyc='pending';saveDB(db);toast('Đã gửi hồ sơ KYC.');renderKyc()})}
+    function renderHelp(){$('#appContent').innerHTML=`<div class="panel"><h3>Hỗ trợ</h3><p>Phần này mô phỏng help center của RemitVN.</p><div class="grid-3"><div class="feature"><h3>Stablecoin là gì?</h3><p>Được dùng như hạ tầng settlement phía sau. Người dùng không cần sở hữu crypto.</p></div><div class="feature"><h3>Phí tính thế nào?</h3><p>Prototype tính 0,5% trên số tiền gửi. Tỷ giá demo cố định 26.100 VND/USD.</p></div><div class="feature"><h3>Giao dịch bị review?</h3><p>Admin có thể đóng băng giao dịch để mô phỏng quy trình AML/risk review.</p></div></div></div>`}
+    function renderAdmin(){const db=getDB(),tx=db.tx,users=db.users.filter(u=>u.role==='user'),vol=tx.filter(t=>t.status==='completed').reduce((s,t)=>s+t.amount,0),rev=tx.reduce((s,t)=>s+t.fee,0),pending=users.filter(u=>u.kyc==='pending').length,frozen=tx.filter(t=>t.status==='frozen').length;$('#appContent').innerHTML=`<div class="panel"><div class="row"><div><h3>Admin Dashboard</h3><p>Giám sát người dùng, KYC và luồng giao dịch.</p></div><span class="pill">Sandbox</span></div><div class="admin-grid"><div class="metric"><div class="label">TOTAL VOLUME</div><div class="value">${moneyUSD(vol)}</div></div><div class="metric"><div class="label">REVENUE</div><div class="value">${moneyUSD(rev)}</div></div><div class="metric"><div class="label">KYC PENDING</div><div class="value">${pending}</div></div><div class="metric"><div class="label">FROZEN TX</div><div class="value">${frozen}</div></div></div><div class="notice">Đây là dashboard mô phỏng để thể hiện compliance và risk operations trong một fintech remittance.</div></div>`}
+    function renderAdminKyc(){const db=getDB(),users=db.users.filter(u=>u.role==='user');$('#appContent').innerHTML=`<div class="panel"><h3>KYC Queue</h3><p>Duyệt hoặc từ chối hồ sơ người dùng.</p><div class="table-wrap"><table><thead><tr><th>Người dùng</th><th>Email</th><th>Giấy tờ</th><th>Trạng thái</th><th>Hành động</th></tr></thead><tbody>${users.map(u=>`<tr><td>${u.name}</td><td>${u.email}</td><td>${u.doc||'—'}</td><td>${u.kyc==='verified'?'<span class="status ok">Đã xác minh</span>':u.kyc==='pending'?'<span class="status pending">Chờ duyệt</span>':'<span class="status danger">Chưa xác minh</span>'}</td><td>${u.kyc==='pending'?`<button class="btn btn-primary btn-small" onclick="adminSetKyc('${u.id}','verified')">Duyệt</button> <button class="btn btn-danger btn-small" onclick="adminSetKyc('${u.id}','rejected')">Từ chối</button>`:'—'}</td></tr>`).join('')}</tbody></table></div></div>`}
+    function adminSetKyc(id,state){const db=getDB(),u=db.users.find(x=>x.id===id);u.kyc=state;saveDB(db);toast(state==='verified'?'Đã duyệt KYC.':'Đã từ chối KYC.');renderAdminKyc()}
+    function renderAdminTx(){const db=getDB(),tx=[...db.tx].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));$('#appContent').innerHTML=`<div class="panel"><h3>Transactions</h3><p>Admin có thể đóng băng hoặc tiếp tục giao dịch.</p><div class="table-wrap"><table><thead><tr><th>Mã</th><th>User</th><th>Người nhận</th><th>Số tiền</th><th>Trạng thái</th><th>Risk action</th></tr></thead><tbody>${tx.map(t=>{const u=db.users.find(x=>x.id===t.userId);return `<tr><td>${t.id}</td><td>${u?.email||'—'}</td><td>${t.recipient}</td><td>${moneyUSD(t.amount)}</td><td>${statusHtml(t)}</td><td>${t.status==='frozen'?`<button class="btn btn-primary btn-small" onclick="adminTxAction('${t.id}','release')">Release</button>`:`<button class="btn btn-danger btn-small" onclick="adminTxAction('${t.id}','freeze')">Freeze</button>`}</td></tr>`}).join('')}</tbody></table></div></div>`}
+    function adminTxAction(id,action){const db=getDB(),t=db.tx.find(x=>x.id===id);if(action==='freeze'){t.status='frozen'}else{t.status=t.stage>=5?'completed':'processing';if(t.status==='processing')simulateTx(t.id)}saveDB(db);toast(action==='freeze'?'Đã đóng băng giao dịch.':'Đã tiếp tục giao dịch.');renderAdminTx()}
+    function showReceipt(id){const db=getDB(),t=db.tx.find(x=>x.id===id);if(!t)return;$('#receiptContent').innerHTML=`<div class="receipt"><div class="row"><div><div class="logo">RemitVN</div><small>Biên lai giao dịch demo</small></div><div style="text-align:right"><b>${t.id}</b><br><small>${dateVN(t.createdAt)}</small></div></div><div style="height:14px"></div><div class="receipt-row"><span>Người nhận</span><b>${t.recipient}</b></div><div class="receipt-row"><span>Ngân hàng</span><b>${t.bank}</b></div><div class="receipt-row"><span>Số tài khoản</span><b>${t.account}</b></div><div class="receipt-row"><span>Số tiền gửi</span><b>${moneyUSD(t.amount)}</b></div><div class="receipt-row"><span>Phí RemitVN</span><b>${moneyUSD(t.fee)}</b></div><div class="receipt-row"><span>Tỷ giá</span><b>1 USD = ${new Intl.NumberFormat('vi-VN').format(t.rate)} VND</b></div><div class="receipt-row"><span>Người nhận nhận</span><b>${moneyVND(t.receive)}</b></div><div class="receipt-row"><span>Phương thức</span><b>${t.payment}</b></div><div class="receipt-row"><span>Trạng thái</span><b>${t.status==='completed'?'Thành công':t.status==='frozen'?'Đang review':'Đang xử lý'}</b></div><div class="receipt-row"><span>Blockchain reference</span><b style="max-width:300px;word-break:break-all">${t.blockchain}</b></div><p style="font-size:11px;color:#666;margin-top:18px">Stablecoin được RemitVN xử lý tự động ở backend. Đây là biên lai prototype, không phải chứng từ thanh toán thật.</p></div>`;showModal('receiptModal')}
+
+    // Events
+    initStore();updatePublicCalc();refreshTop();
+    $('#publicAmount').addEventListener('input',updatePublicCalc);
+    $('#loginTop').onclick=()=>showModal('authModal');$('#dashboardTop').onclick=()=>authRequired('dashboard');$('#logoutTop').onclick=()=>{setSession(null);refreshTop();openPublic('home');toast('Đã đăng xuất.')};
+    $('#heroSend').onclick=()=>authRequired('send');$('#calcSend').onclick=()=>{sendState.amount=Math.max(10,Number($('#publicAmount').value||1000));authRequired('send')};
+    $$('[data-go]').forEach(b=>b.addEventListener('click',()=>openPublic(b.dataset.go)));
+    $$('[data-close]').forEach(b=>b.addEventListener('click',()=>hideModal(b.dataset.close)));
+    $$('.tab').forEach(t=>t.addEventListener('click',()=>{$$('.tab').forEach(x=>x.classList.toggle('active',x===t));$('#loginForm').classList.toggle('hidden',t.dataset.authTab!=='login');$('#registerForm').classList.toggle('hidden',t.dataset.authTab!=='register')}));
+    $('#loginForm').addEventListener('submit',e=>{e.preventDefault();const db=getDB(),email=$('#loginEmail').value.trim().toLowerCase(),pass=$('#loginPassword').value,u=db.users.find(x=>x.email.toLowerCase()===email&&x.password===pass);if(!u){toast('Email hoặc mật khẩu không đúng.');return}setSession({userId:u.id});hideModal('authModal');refreshTop();const next=localStorage.getItem('remitvn_after_login')||(u.role==='admin'?'admin':'dashboard');localStorage.removeItem('remitvn_after_login');openApp(next);toast('Đăng nhập thành công.')});
+    $('#registerForm').addEventListener('submit',e=>{e.preventDefault();const db=getDB(),email=$('#regEmail').value.trim().toLowerCase();if(db.users.some(x=>x.email.toLowerCase()===email)){toast('Email đã tồn tại.');return}const u={id:'u-'+Date.now(),name:$('#regName').value.trim(),phone:$('#regPhone').value.trim(),email,password:$('#regPassword').value,role:'user',kyc:'unverified'};db.users.push(u);saveDB(db);setSession({userId:u.id});hideModal('authModal');refreshTop();openApp('kyc');toast('Tạo tài khoản thành công. Hãy hoàn tất KYC.')});
+    $('#printReceipt').onclick=()=>window.print();
+    document.addEventListener('click',e=>{const b=e.target.closest('[data-view]');if(b)setView(b.dataset.view)});
+    window.setView=setView;window.showReceipt=showReceipt;window.adminSetKyc=adminSetKyc;window.adminTxAction=adminTxAction;
+    if(currentUser())refreshTop();
+  </script>
+</body>
+</html>
